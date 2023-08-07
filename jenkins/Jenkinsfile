@@ -13,7 +13,7 @@ pipeline {
             steps {
                 // Define the tools section to use a specific Maven installation
                 tools {
-                    maven 'Maven-3.9.0' // Adjust the version as needed
+                    maven 'maven-3.9.0' // Adjust the version as needed
                 }
                 // Build the Java application using Maven
                 sh 'mvn clean package'
