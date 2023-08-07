@@ -1,22 +1,44 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.0'
-            args '-v /root/.m2:/root/.m2'
-        }
-    }
-    stages {
-      stage('Build') {
-            steps {
-                // Checkout the source code from your version control system (e.g., Git)
-                // Adjust the URL and credentials as needed
-                git 'https://github.com/anilyadav3317/Mini-project-1.git'
+    agent any
 
-                // Run 'mvn clean install' to build the Java application
-                sh 'mvn clean install'
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the source code from the Git repository
+                git url: 'https://github.com/anilyadav3317/Mini-project-1.git'
             }
         }
-               
+        
+        stage('Build') {
+            steps {
+                // Define the tools section to use a specific Maven installation
+                tools {
+                    maven 'Maven-3.8.1' // Adjust the version as needed
+                }
+                // Build the Java application using Maven
+                sh 'mvn clean package'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                // Add any testing steps here (e.g., unit tests, integration tests)
+                // For simplicity, this example skips tests. In a real-world scenario, tests are essential.
+            }
+        }
+        
+        stage('Artifact') {
+            steps {
+                // Copy the built artifact (e.g., JAR file) to the Jenkins workspace
+                sh 'cp /path/to/your/java/application/target/your-application.jar .'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Archive the built artifact for later use or deployment
+            archiveArtifacts artifacts: 'your-application.jar', onlyIfSuccessful: true
+        }
     }
 }
-
